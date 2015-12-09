@@ -94,32 +94,42 @@ void help() {
 
 
 void populateArray() {
-    ofstream workingFile("vocabList.txt");
+    cout << "populating array \n";
+    ifstream workingFile("vocabList.txt");
+    cout << "created text file \n";
     vocabList->clear();
     if (workingFile.is_open()) {
+       cout << "file is open \n";
        string nextLine;
-       getline(cin, nextLine);
-       //convert each line to a stringStream so that I can parse through it
-       
-       istringstream ss(nextLine);
-       string temp;
-       
-        //array of strings to temporarily hold the inputs for the VocabWord
-        vector<string> temporaryParameters;
-       while (getline(ss, temp, '|')) {
-            temporaryParameters.push_back(temp);
+       cout << "soooo what's gonna happen if we do getline when there's an empty file? \n";
+       cout << nextLine << "\n";
+       vector<string> temporaryParameters;
+       while ( getline(workingFile, nextLine)) {
+           cout << nextLine << "\n";
+            //convert each line to a stringStream so that I can parse through it
+            cout << "now we gonna string some streams. no rivers round here oh nonono \n";
+            istringstream ss(nextLine);
+            string temp;
+            //array of strings to temporarily hold the inputs for the VocabWord
+            
+            cout << "uuuuuuuuuh";
+            while (getline(ss, temp, '|')) {
+                cout << "infinite loop? \n";
+                temporaryParameters.push_back(temp);
+            };
        };
-      
       //create an instance of VocabWord based off of the given line
-       VocabWord *nextWord = new VocabWord(temporaryParameters[0], temporaryParameters[1], temporaryParameters[2], temporaryParameters[3]);
-       temporaryParameters.clear();
+      cout << "gonna make a word";
+      VocabWord *nextWord = new VocabWord(temporaryParameters[0], temporaryParameters[1], temporaryParameters[2], temporaryParameters[3]);
+      temporaryParameters.clear();
        
-       //add the new VocabWord to vocabList
-       vocabList->push_back(nextWord);
+      //add the new VocabWord to vocabList
+      vocabList->push_back(nextWord);
     }
     else {
-        cout << "unable to open file";
+       cout << "unable to open file";
     };
+    cout << "end populateArray";
 };
 
 void addVocab(string word, string pos, string definition, string sentence) {
@@ -198,6 +208,7 @@ void promptUserStudy() {
 
 int main() {
     vocabList = new vector<VocabWord*>();
+    cout << "about to populate array \n";
     populateArray();
     cout << "this is a tool for studying vocab lists. enter 'help' to see your options";
     string userInput;

@@ -5,6 +5,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+// #define DEBUG
 
 using namespace std;
 
@@ -96,7 +97,11 @@ void help() {
 void populateArray() {
     cout << "populating array \n";
     ifstream workingFile("vocabList.txt");
+    
+#ifdef DEBUG
     cout << "created text file \n";
+#endif
+    
     vocabList->clear();
     if (workingFile.is_open()) {
        cout << "file is open \n";

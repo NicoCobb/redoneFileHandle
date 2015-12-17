@@ -65,13 +65,25 @@ int convertToAscii(string toConvert) {
 };
 
 void quickSortAlphabetical(int left, int right) {
+#ifdef DEBUG
+    cout << "beginning sort for alphabetical \n";
+#endif
     int i = left;
     int j = right;
     VocabWord *temp;
-    int pivot = convertToAscii(vocabList->at((left + right) / 2)->getWord());
+    int pivot = int (vocabList->at((left + right) / 2)->getWord()[0]);
+
+#ifdef DEBUG
+    cout << "pivot: " << pivot << "\n";
+    cout << "hey: " << vocabList->at((left + right) / 2)->getWord()[0] << "\n";
+    cout << "hey: " << vocabList->at(1)->getWord()[0] << "\n";
+#endif
     
     //split the vector based on the pivot and shift all values beneath it to the left using ascii values
     while (i <=j) {
+#ifdef DEBUG
+    cout << "sorting... \n";
+#endif    
         while (convertToAscii(vocabList->at(i)->getWord()) < pivot) {
             i++;
         };
@@ -89,78 +101,124 @@ void quickSortAlphabetical(int left, int right) {
 };
 
 void help() {
-    cout << "add: add new vocab words";
-    cout << "study: study the your vocab list in either alphabetical or random order";
+    cout << "add: add new vocab words \n";
+    cout << "study: study the your vocab list in either alphabetical or random order \n";
+    cout << "end: end the program \n";
 };
 
 
 void populateArray() {
-    cout << "populating array \n";
     ifstream workingFile("vocabList.txt");
-    
-#ifdef DEBUG
-    cout << "created text file \n";
-#endif
     
     vocabList->clear();
     if (workingFile.is_open()) {
-       cout << "file is open \n";
        string nextLine;
-       cout << "soooo what's gonna happen if we do getline when there's an empty file? \n";
-       cout << nextLine << "\n";
+
        vector<string> temporaryParameters;
        while ( getline(workingFile, nextLine)) {
-           cout << nextLine << "\n";
-            //convert each line to a stringStream so that I can parse through it
+           
+#ifdef DEBUG
+            cout << nextLine << "\n";
             cout << "now we gonna string some streams. no rivers round here oh nonono \n";
+#endif
+            //convert each line to a stringStream so that I can parse through it
             istringstream ss(nextLine);
             string temp;
             //array of strings to temporarily hold the inputs for the VocabWord
             
-            cout << "uuuuuuuuuh";
+#ifdef DEBUG
+            cout << "uuuuuuuuuh \n";
+#endif
+            
             while (getline(ss, temp, '|')) {
-                cout << "infinite loop? \n";
+
                 temporaryParameters.push_back(temp);
+            };
+            
+#ifdef DEBUG
+      cout << "gonna make a word \n";
+#endif
+      
+            if (temporaryParameters.size() != 0) {
+                VocabWord *nextWord = new VocabWord(temporaryParameters[0], temporaryParameters[1], temporaryParameters[2], temporaryParameters[3]);
+                temporaryParameters.clear();
+               
+                //add the new VocabWord to vocabList
+                vocabList->push_back(nextWord);
             };
        };
       //create an instance of VocabWord based off of the given line
-      cout << "gonna make a word";
-      VocabWord *nextWord = new VocabWord(temporaryParameters[0], temporaryParameters[1], temporaryParameters[2], temporaryParameters[3]);
-      temporaryParameters.clear();
-       
-      //add the new VocabWord to vocabList
-      vocabList->push_back(nextWord);
+      
+
+
     }
     else {
-       cout << "unable to open file";
+       cout << "unable to open file \n";
     };
-    cout << "end populateArray";
+    
+#ifdef DEBUG
+    cout << "end populateArray \n";
+#endif
+
 };
 
 void addVocab(string word, string pos, string definition, string sentence) {
-    ofstream workingFile("vocabList.txt");
+    ofstream workingFile("vocabList.txt", ios_base::app);
     if (workingFile.is_open()) {
-        workingFile << word << "|" << pos << "|" << definition << "|" << sentence;
+        workingFile << word << "|" << pos << "|" << definition << "|" << sentence << "\n";
         populateArray();
     }
     else {
-        cout << "unable to open file";
+        cout << "unable to open file \n";
     };
-};  
+};
 
 void study() {
     int counter = 0;
-    cout << "what word matches this definition? \n" << vocabList->at(counter)->getDefinition();
+
+    //the word that will be studied
     string word;
-    getline (cin, word);
-    if (word == vocabList->at(counter)->getWord()) {
-        cout << "Correct! what is the matching part of speech?";
-        string partSpeech;
-        getline (cin, partSpeech);
-        if (partSpeech == vocabList->at(counter)->getPos()) {
-            cout << "Correct! would you like to continue to the next word?";
+    //decides if teh study method will continue to loop or not
+    bool keepStudying = true;
+    
+    while(keepStudying == true) {
+        
+        //begin studying by asking for the matching word
+        cout << "what word matches this definition? \n" << vocabList->at(counter)->getDefinition() << "\n";
+        getline (cin, word);
+        
+        if (word == vocabList->at(counter)->getWord()) {
+            cout << "Correct! what is the matching part of speech? \n";
+            string partSpeech;
+            getline (cin, partSpeech);
+            if (partSpeech == vocabList->at(counter)->getPos()) {
+                cout << "Correct! \n Would you like to continue to the next word? \n";
+                cout << "Enter 'yes' to continue or 'no' to stop studying \n";
+                bool properResponse = false;
+                while (properResponse == false) {
+                    string choice;
+                    getline (cin, choice);
+                    if (choice == "yes") {
+                        properResponse = true;
+                    } else if (choice == "no") {
+                        properResponse = true;
+                    } else {
+                        cout << "Please enter yes or no \n";
+                    };
+                }
+            } else {
+                cout << "no of course that's not the part of speech. how bad at this can you be. git gud. \n";
+            };
+        } else {
+            cout << "hahahahahahahaha no you're wrong. \n";
+        }
+        counter++;
+        if (counter >= vocabList->size()) {
+        cout << "you have reached the end of the list! exiting back to main menu \n";
+        keepStudying = false;
         };
     };
+    
 };
 
 void studyRandomly() {
@@ -190,7 +248,11 @@ void promptUserAdd() {
 };
 
 void studyAlphabetical() {
+    
     //alphabetizes the words
+#ifdef DEBUG
+    cout << vocabList->at(0)->getWord() << "\n";
+#endif
     quickSortAlphabetical(0, (vocabList->size() - 1));
     //uses new order of words for study
     study();
@@ -213,20 +275,31 @@ void promptUserStudy() {
 
 int main() {
     vocabList = new vector<VocabWord*>();
+    vocabList->clear();
+    
+#ifdef DEBUG
     cout << "about to populate array \n";
-    populateArray();
-    cout << "this is a tool for studying vocab lists. enter 'help' to see your options";
-    string userInput;
-    getline(cin, userInput);
-    if (userInput == "help") {
-        help();
-    } else if (userInput == "add") {
-        promptUserAdd();
-    } else if (userInput == "study") {
-        promptUserStudy();
-    } else {
-        cout << "please enter one of the given commands. enter 'help' to see your options";
-    };
+#endif
 
+    populateArray();
+    cout << "this is a tool for studying vocab lists. enter 'help' to see your options \n";
+    string userInput;
+    bool keepGoing = true;
+    
+    while (keepGoing == true) {
+        getline(cin, userInput);
+        if (userInput == "help") {
+            help();
+        } else if (userInput == "add") {
+            promptUserAdd();
+        } else if (userInput == "study") {
+            promptUserStudy();
+        } else if (userInput == "end") {
+            keepGoing = false;
+        }
+        else {
+            cout << "please enter one of the given commands. enter 'help' to see your options \n";
+        };
+    }
     return 0;
 };

@@ -1,1 +1,2 @@
-APPLE | NOUN | THIS IS FRUIT | I AM A FRUIT NAMED APPLE
+jerry|noun|bagel master|jerry will make soooooooooo many bagels
+apple|noun|a fruity fruit|apples can come in various colors, but green is superior unless it is a red honeycrisp
